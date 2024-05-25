@@ -5,19 +5,20 @@ import (
 	"time"
 
 	"github.com/psodm/macroeats/internal/data"
+	"github.com/psodm/macroeats/internal/validator"
 )
 
 func (app *application) handleCreateRecipe() http.Handler {
 	type inputPayload struct {
 		Name         string                         `json:"name"`
 		Description  string                         `json:"description"`
-		Servings     float64                        `json:"servings,omitempty"`
-		Macros       data.Macros                    `json:"macros,omitempty"`
-		PrepTime     int64                          `json:"prepTime,omitempty"`
-		TotalTime    int64                          `json:"totalTime,omitempty"`
+		Servings     float64                        `json:"servings"`
+		Macros       data.Macros                    `json:"macros"`
+		PrepTime     int64                          `json:"prepTime"`
+		TotalTime    int64                          `json:"totalTime"`
 		Ingredients  []data.RecipeIngredientSection `json:"ingredients"`
 		Instructions []data.RecipeInstruction       `json:"instructions"`
-		Notes        string                         `json:"notes,omitempty"`
+		Notes        string                         `json:"notes"`
 	}
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -26,8 +27,30 @@ func (app *application) handleCreateRecipe() http.Handler {
 				app.badRequestResponse(w, r, err)
 				return
 			}
+
+			recipe := &data.Recipe{
+				Name:         payload.Name,
+				Description:  payload.Description,
+				Servings:     payload.Servings,
+				Macros:       payload.Macros,
+				PrepTime:     data.CookingTime(payload.PrepTime),
+				TotalTime:    data.CookingTime(payload.TotalTime),
+				Ingredients:  payload.Ingredients,
+				Instructions: payload.Instructions,
+				Notes:        payload.Notes,
+				CreatedAt:    time.Now(),
+				Version:      1,
+			}
+
+			v := validator.New()
+
+			if data.ValidateRecipe(v, recipe); !v.Valid() {
+				app.failedValidationResponse(w, r, v.Errors)
+				return
+			}
+
 			// fmt.Fprintf(w, "%+v\n", payload)
-			app.writeJSON(w, http.StatusOK, envelope{"recipe": payload}, nil)
+			app.writeJSON(w, http.StatusOK, envelope{"recipe": recipe}, nil)
 		},
 	)
 }
