@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -14,20 +13,21 @@ func (app *application) handleCreateRecipe() http.Handler {
 		Description  string                         `json:"description"`
 		Servings     float64                        `json:"servings,omitempty"`
 		Macros       data.Macros                    `json:"macros,omitempty"`
-		PrepTime     string                         `json:"prepTime,omitempty"`
-		TotalTime    string                         `json:"totalTime,omitempty"`
+		PrepTime     int64                          `json:"prepTime,omitempty"`
+		TotalTime    int64                          `json:"totalTime,omitempty"`
 		Ingredients  []data.RecipeIngredientSection `json:"ingredients"`
 		Instructions []data.RecipeInstruction       `json:"instructions"`
 		Notes        string                         `json:"notes,omitempty"`
 	}
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			payload, err := decode[inputPayload](r)
+			payload, err := decode[inputPayload](w, r)
 			if err != nil {
-				app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+				app.badRequestResponse(w, r, err)
 				return
 			}
-			fmt.Fprintf(w, "%+v\n", payload)
+			// fmt.Fprintf(w, "%+v\n", payload)
+			app.writeJSON(w, http.StatusOK, envelope{"recipe": payload}, nil)
 		},
 	)
 }
