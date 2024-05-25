@@ -9,9 +9,25 @@ import (
 )
 
 func (app *application) handleCreateRecipe() http.Handler {
+	type inputPayload struct {
+		Name         string                         `json:"name"`
+		Description  string                         `json:"description"`
+		Servings     float64                        `json:"servings,omitempty"`
+		Macros       data.Macros                    `json:"macros,omitempty"`
+		PrepTime     string                         `json:"prepTime,omitempty"`
+		TotalTime    string                         `json:"totalTime,omitempty"`
+		Ingredients  []data.RecipeIngredientSection `json:"ingredients"`
+		Instructions []data.RecipeInstruction       `json:"instructions"`
+		Notes        string                         `json:"notes,omitempty"`
+	}
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintln(w, "create a new recipe")
+			payload, err := decode[inputPayload](r)
+			if err != nil {
+				app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+				return
+			}
+			fmt.Fprintf(w, "%+v\n", payload)
 		},
 	)
 }

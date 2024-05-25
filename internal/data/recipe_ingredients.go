@@ -2,7 +2,7 @@ package data
 
 type RecipeIngredientSection struct {
 	SectionName string             `json:"section"`
-	Ingredients []RecipeIngredient `json:"ingredient"`
+	Ingredients []RecipeIngredient `json:"ingredients"`
 }
 
 type RecipeIngredient struct {
