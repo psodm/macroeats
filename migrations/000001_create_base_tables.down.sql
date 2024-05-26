@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS recipe_instructions;
+DROP TABLE IF EXISTS recipe_ingredients;
+DROP TABLE IF EXISTS recipe_ingredient_sections;
+DROP TABLE IF EXISTS recipe_notes;
+DROP TABLE IF EXISTS recipes;
+DROP TABLE IF EXISTS meal_types;
+DROP TABLE IF EXISTS cuisines;
+DROP TABLE IF EXISTS ingredients;
+DROP TABLE IF EXISTS macros;
+DROP TABLE IF EXISTS measurement_units;

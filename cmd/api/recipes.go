@@ -20,7 +20,7 @@ func (app *application) handleCreateRecipe() http.Handler {
 		TotalTime    int64                          `json:"totalTime"`
 		Ingredients  []data.RecipeIngredientSection `json:"ingredients"`
 		Instructions []data.RecipeInstruction       `json:"instructions"`
-		Notes        []data.RecipeNote              `json:"notes"`
+		Notes        []string                       `json:"notes"`
 	}
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -102,8 +102,8 @@ func (app *application) handleShowRecipe() http.Handler {
 					{Step: 5, Description: "Divide the mixture between 3 bowls"},
 					{Step: 6, Description: "Cover each bowl and chill in the fridge for at least 3 hours"},
 				},
-				Notes: []data.RecipeNote{
-					{Note: "Suitable for meal prep. Keeps in the fridge 2-3 days. Can be made without salt, but a pinch of salt will enhance the sweetness"},
+				Notes: []string{
+					"Suitable for meal prep. Keeps in the fridge 2-3 days. Can be made without salt, but a pinch of salt will enhance the sweetness",
 				},
 				CreatedAt: time.Now(),
 				Version:   1,
