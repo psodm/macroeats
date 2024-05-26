@@ -12,13 +12,15 @@ func (app *application) handleCreateRecipe() http.Handler {
 	type inputPayload struct {
 		Name         string                         `json:"name"`
 		Description  string                         `json:"description"`
+		MealType     string                         `json:"mealType"`
+		Cuisine      string                         `json:"cuisine"`
 		Servings     float64                        `json:"servings"`
 		Macros       data.Macros                    `json:"macros"`
 		PrepTime     int64                          `json:"prepTime"`
 		TotalTime    int64                          `json:"totalTime"`
 		Ingredients  []data.RecipeIngredientSection `json:"ingredients"`
 		Instructions []data.RecipeInstruction       `json:"instructions"`
-		Notes        string                         `json:"notes"`
+		Notes        []data.RecipeNote              `json:"notes"`
 	}
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +33,8 @@ func (app *application) handleCreateRecipe() http.Handler {
 			recipe := &data.Recipe{
 				Name:         payload.Name,
 				Description:  payload.Description,
+				MealType:     payload.MealType,
+				Cuisine:      payload.Cuisine,
 				Servings:     payload.Servings,
 				Macros:       payload.Macros,
 				PrepTime:     data.CookingTime(payload.PrepTime),
@@ -67,6 +71,8 @@ func (app *application) handleShowRecipe() http.Handler {
 				ID:          id,
 				Name:        "High Protein Mousse Bowl",
 				Description: "High protein, low fat and low carb mousse bowl",
+				MealType:    "Dessert",
+				Cuisine:     "Modern",
 				Servings:    3,
 				Macros: data.Macros{
 					Energy:        715.4,
@@ -96,7 +102,9 @@ func (app *application) handleShowRecipe() http.Handler {
 					{Step: 5, Description: "Divide the mixture between 3 bowls"},
 					{Step: 6, Description: "Cover each bowl and chill in the fridge for at least 3 hours"},
 				},
-				Notes:     "Suitable for meal prep. Keeps in the fridge 2-3 days. Can be made without salt, but a pinch of salt will enhance the sweetness",
+				Notes: []data.RecipeNote{
+					{Note: "Suitable for meal prep. Keeps in the fridge 2-3 days. Can be made without salt, but a pinch of salt will enhance the sweetness"},
+				},
 				CreatedAt: time.Now(),
 				Version:   1,
 			}
