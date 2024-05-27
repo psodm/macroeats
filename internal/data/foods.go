@@ -13,23 +13,23 @@ type Food struct {
 	ID                   int64   `json:"Id"`
 	FoodName             string  `json:"foodName"`
 	BrandName            string  `json:"brandName"`
-	ServingQuantity      float64 `json:"servingSize"`
+	ServingSize          float64 `json:"servingSize"`
 	ServingMeasurementID int64   `json:"servingMeasurementId"`
 	MacrosID             int64   `json:"macrosId"`
 }
 
 type FoodTx struct {
-	ID              int64       `json:"Id"`
-	FoodName        string      `json:"foodName"`
-	BrandName       string      `json:"brandName"`
-	ServingQuantity float64     `json:"servingQuantity"`
-	Measurement     Measurement `json:"measurement"`
-	Macros          Macros      `json:"macros"`
+	ID          int64       `json:"Id"`
+	FoodName    string      `json:"foodName"`
+	BrandName   string      `json:"brandName"`
+	ServingSize float64     `json:"servingSize"`
+	Measurement Measurement `json:"measurement"`
+	Macros      Macros      `json:"macros"`
 }
 
 func ValidateFood(v *validator.Validator, food Food) {
 	v.Check(food.FoodName != "", "foodName", "must be provided")
-	v.Check(food.ServingQuantity > 0, "servingSize", "must be provided")
+	v.Check(food.ServingSize > 0, "servingSize", "must be provided")
 }
 
 type FoodModel struct {
@@ -37,11 +37,11 @@ type FoodModel struct {
 }
 
 func (f FoodModel) Insert(food *Food) error {
-	query := `INSERT INTO foods (food_name, brand_name, serving_quantity, serving_measurement_id, macros_id)
+	query := `INSERT INTO foods (food_name, brand_name, serving_size, serving_measurement_id, macros_id)
 	          VALUES($1, $2, $3, $4, $5) RETURNING food_id`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	args := []any{food.FoodName, food.BrandName, food.ServingQuantity, food.ServingMeasurementID, food.MacrosID}
+	args := []any{food.FoodName, food.BrandName, food.ServingSize, food.ServingMeasurementID, food.MacrosID}
 	return f.DB.QueryRowContext(ctx, query, args...).Scan(&food.ID)
 }
 
@@ -61,7 +61,7 @@ func (f FoodModel) InsertTx(foodTx *FoodTx) error {
 
 	query1 := `SELECT measurement_id, measurement_name FROM measurements WHERE measurement_abbreviation = $1`
 	query2 := `INSERT INTO macros (energy, calories, protein, carbohydrate, fat) VALUES ($1, $2, $3, $4, $5) RETURNING macros_id`
-	query3 := `INSERT into foods (food_name, brand_name, serving_quantity, serving_measurement_id, macros_id) VALUES ($1, $2, $3, $4, $5) RETURNING food_id`
+	query3 := `INSERT into foods (food_name, brand_name, serving_size, serving_measurement_id, macros_id) VALUES ($1, $2, $3, $4, $5) RETURNING food_id`
 
 	err = tx.QueryRowContext(ctx, query1, foodTx.Measurement.MeasurementAbbreviation).Scan(&foodTx.Measurement.ID, &foodTx.Measurement.MeasurementName)
 	if err != nil {
@@ -74,6 +74,10 @@ func (f FoodModel) InsertTx(foodTx *FoodTx) error {
 		return fail(err)
 	}
 
-	args = []any{foodTx.FoodName, foodTx.BrandName, foodTx.ServingQuantity, foodTx.Measurement.ID, foodTx.Measurement.ID}
+	args = []any{foodTx.FoodName, foodTx.BrandName, foodTx.ServingSize, foodTx.Measurement.ID, foodTx.Macros.ID}
 	return tx.QueryRowContext(ctx, query3, args...).Scan(&foodTx.ID)
+}
+
+func (f FoodModel) GetFoodById(id int64) (*Food, error) {
+	return nil, nil
 }

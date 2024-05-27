@@ -12,7 +12,7 @@ func (app *application) handleCreateFood() http.Handler {
 	type inputPayload struct {
 		Name               string  `json:"foodName"`
 		BrandName          string  `json:"brandName"`
-		ServingQuantity    float64 `json:"servingQuantity"`
+		ServingSize        float64 `json:"servingSize"`
 		ServingMeasurement string  `json:"servingMeasurement"`
 		Energy             float64 `json:"energy"`
 		Calories           float64 `json:"calories"`
@@ -42,12 +42,12 @@ func (app *application) handleCreateFood() http.Handler {
 			}
 			macros.NormaliseMacrosEnergyAndCalories()
 			food := data.FoodTx{
-				ID:              0,
-				FoodName:        payload.Name,
-				BrandName:       payload.BrandName,
-				ServingQuantity: payload.ServingQuantity,
-				Measurement:     measurement,
-				Macros:          macros,
+				ID:          0,
+				FoodName:    payload.Name,
+				BrandName:   payload.BrandName,
+				ServingSize: payload.ServingSize,
+				Measurement: measurement,
+				Macros:      macros,
 			}
 			err = app.models.Foods.InsertTx(&food)
 			if err != nil {
@@ -62,6 +62,19 @@ func (app *application) handleCreateFood() http.Handler {
 			if err != nil {
 				app.serverErrorResponse(w, r, err)
 			}
+		},
+	)
+}
+
+func (app *application) handleShowFood() http.Handler {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			id, err := app.readIDParam(r)
+			if err != nil {
+				http.NotFound(w, r)
+				return
+			}
+			fmt.Println(id)
 		},
 	)
 }

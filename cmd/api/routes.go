@@ -13,6 +13,7 @@ func (app *application) routes() http.Handler {
 	router.Handle("PUT /api/v1/measurements/{id}", app.handleUpdateMeasurement())
 
 	router.Handle("POST /api/v1/foods", app.handleCreateFood())
+	router.Handle("GET /api/v1/foods/{id}", app.handleShowFood())
 
 	router.Handle("POST /api/v1/ingredients", app.handleCreateIngredient())
 
