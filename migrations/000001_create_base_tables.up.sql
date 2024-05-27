@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS macros (
 CREATE TABLE IF NOT EXISTS foods (
     food_id SERIAL PRIMARY KEY,
     food_name TEXT NOT NULL UNIQUE,
-    serving_quantity NUMERIC NOT NULL,
+    brand_name TEXT,
+    serving_size NUMERIC NOT NULL,
     serving_measurement_id INTEGER NOT NULL REFERENCES measurements(measurement_id),
     macros_id INTEGER NOT NULL REFERENCES macros(macros_id)
 );

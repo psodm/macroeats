@@ -12,6 +12,8 @@ func (app *application) routes() http.Handler {
 	router.Handle("GET /api/v1/measurements/{id}", app.handleShowMeasurement())
 	router.Handle("PUT /api/v1/measurements/{id}", app.handleUpdateMeasurement())
 
+	router.Handle("POST /api/v1/foods", app.handleCreateFood())
+
 	router.Handle("POST /api/v1/ingredients", app.handleCreateIngredient())
 
 	router.Handle("POST /api/v1/recipes", app.handleCreateRecipe())
