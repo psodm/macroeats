@@ -11,6 +11,7 @@ import (
 func (app *application) handleCreateFood() http.Handler {
 	type inputPayload struct {
 		Name               string  `json:"foodName"`
+		BrandName          string  `json:"brandName"`
 		ServingQuantity    float64 `json:"servingQuantity"`
 		ServingMeasurement string  `json:"servingMeasurement"`
 		Energy             float64 `json:"energy"`
@@ -43,11 +44,12 @@ func (app *application) handleCreateFood() http.Handler {
 			food := data.FoodTx{
 				ID:              0,
 				FoodName:        payload.Name,
+				BrandName:       payload.BrandName,
 				ServingQuantity: payload.ServingQuantity,
 				Measurement:     measurement,
 				Macros:          macros,
 			}
-			err = app.models.Foods.InsertTX(&food)
+			err = app.models.Foods.InsertTx(&food)
 			if err != nil {
 				app.logger.Error(err.Error())
 				app.serverErrorResponse(w, r, err)
