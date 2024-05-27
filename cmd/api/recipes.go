@@ -86,11 +86,11 @@ func (app *application) handleShowRecipe() http.Handler {
 				Ingredients: []data.RecipeIngredientSection{
 					{SectionName: "Mousse Mixture",
 						Ingredients: []data.RecipeIngredient{
-							{IngredientName: "Jelly Mix, Sugar Free", MeasurementQuantity: 36, MeasurementDescription: "g"},
-							{IngredientName: "Water", MeasurementQuantity: 500, MeasurementDescription: "ml"},
-							{IngredientName: "Greek Yoghurt, Fat Free", MeasurementQuantity: 500, MeasurementDescription: "g"},
-							{IngredientName: "Protein Powder, Unflavored", MeasurementQuantity: 60, MeasurementDescription: "g"},
-							{IngredientName: "Salt", MeasurementQuantity: 1, MeasurementDescription: "pinch"},
+							{IngredientName: "Jelly Mix, Sugar Free", MeasurementQuantity: 36, MeasurementAbbreviation: "g"},
+							{IngredientName: "Water", MeasurementQuantity: 500, MeasurementAbbreviation: "ml"},
+							{IngredientName: "Greek Yoghurt, Fat Free", MeasurementQuantity: 500, MeasurementAbbreviation: "g"},
+							{IngredientName: "Protein Powder, Unflavored", MeasurementQuantity: 60, MeasurementAbbreviation: "g"},
+							{IngredientName: "Salt", MeasurementQuantity: 1, MeasurementAbbreviation: "pinch"},
 						},
 					},
 				},

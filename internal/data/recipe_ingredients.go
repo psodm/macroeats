@@ -6,7 +6,8 @@ type RecipeIngredientSection struct {
 }
 
 type RecipeIngredient struct {
-	IngredientName         string  `json:"ingredientName"`
-	MeasurementQuantity    float64 `json:"ingredientAmount"`
-	MeasurementDescription string  `json:"measurementDescription"`
+	ID                      int64   `json:"Id"`
+	IngredientName          string  `json:"ingredientName"`
+	MeasurementQuantity     float64 `json:"ingredientAmount"`
+	MeasurementAbbreviation string  `json:"measurementAbbreviation"`
 }
