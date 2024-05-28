@@ -87,7 +87,7 @@
         {"ingredientName": "Onion (diced)", "ingredientAmount": 0.5, "measurementDescription": "medium"},
         {"ingredientName": "Garlic", "ingredientAmount": 2, "measurementDescription": "cloves"},
         {"ingredientName": "Paprika", "ingredientAmount": 1, "measurementDescription": "tsp"},
-        {"ingredientName": "Chives (optional", "ingredientAmount": 0.5, "measurementDescription": "handful"}
+        {"ingredientName": "Chives (optional)", "ingredientAmount": 0.5, "measurementDescription": "handful"}
         ]
     }
     ],

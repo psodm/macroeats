@@ -44,6 +44,21 @@ INSERT INTO meals (meal_name) VALUES ('Dessert');
 INSERT INTO meals (meal_name) VALUES ('Snack');
 INSERT INTO meals (meal_name) VALUES ('Drink');
 
+INSERT INTO brands (brand_name) VALUES ('Tamar Valley');
+INSERT INTO brands (brand_name) VALUES ('Jalna');
+INSERT INTO brands (brand_name) VALUES ('Aeroplane');
+INSERT INTO brands (brand_name) VALUES ('Bulk Nutrients');
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (0, 0, 0, 0, 0)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Water', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'ml'), lastval());
+COMMIT;
+
 BEGIN;
     WITH m AS (
         INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
@@ -103,3 +118,68 @@ BEGIN;
     INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
     VALUES ('Egg White', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
 COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (0, 0, 0, 0, 0)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Salt', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (0, 0, 0, 0, 0)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Pepper', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (231, 55, 6.6, 6.7, 0.2)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Greek Yoghurt, 99.85% Fat Free',
+            (SELECT brand_id FROM brands WHERE brand_name = 'Tamar Valley'),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (25, 6, 0.5, 0.5, 0.5)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Jelly, Lite',
+            (SELECT brand_id FROM brands WHERE brand_name = 'Aeroplane'),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (1636, 391, 74.8, 10.2, 5.4)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Whey Protein Concentrate, Raw',
+            (SELECT brand_id FROM brands WHERE brand_name = 'Bulk Nutrients'),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+
+
