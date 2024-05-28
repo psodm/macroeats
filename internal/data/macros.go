@@ -15,7 +15,7 @@ type Macros struct {
 	Energy        float64 `json:"energy"`
 	Calories      float64 `json:"calories"`
 	Protein       float64 `json:"protein"`
-	Carbohydrates float64 `json:"carbohydrate"`
+	Carbohydrates float64 `json:"carbohydrates"`
 	Fat           float64 `json:"fat"`
 }
 
@@ -39,7 +39,7 @@ type MacrosModel struct {
 }
 
 func (m MacrosModel) Insert(macros *Macros) error {
-	query := `INSERT INTO macros (energy, calories, protein, carbohydrate, fat)
+	query := `INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
 	          VALUES($1, $2, $3, $4, $5) RETURNING macros_id`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

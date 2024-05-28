@@ -1,0 +1,105 @@
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Milligram', 'mg');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Ounce', 'oz');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Gram', 'g');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Pound', 'lb');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Kilogram', 'kg');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Pinch', 'pinch');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Litre', 'l');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Fluid Ounce ', 'fl oz');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Gallon', 'gal');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Pint', 'pt');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Quart', 'qt');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Millilitre', 'ml');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Drop', 'drop');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Cup', 'cup');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Teaspoon', 'tsp');
+INSERT INTO measurements (measurement_name, measurement_abbreviation) VALUES ('Tablespoon', 'tbsp');
+
+INSERT INTO cuisines (cuisine_name) VALUES ('American');
+INSERT INTO cuisines (cuisine_name) VALUES ('Australian');
+INSERT INTO cuisines (cuisine_name) VALUES ('British');
+INSERT INTO cuisines (cuisine_name) VALUES ('Dutch');
+INSERT INTO cuisines (cuisine_name) VALUES ('Chinese');
+INSERT INTO cuisines (cuisine_name) VALUES ('Fast Food');
+INSERT INTO cuisines (cuisine_name) VALUES ('French');
+INSERT INTO cuisines (cuisine_name) VALUES ('Fusion');
+INSERT INTO cuisines (cuisine_name) VALUES ('German');
+INSERT INTO cuisines (cuisine_name) VALUES ('Greek');
+INSERT INTO cuisines (cuisine_name) VALUES ('Indonesian');
+INSERT INTO cuisines (cuisine_name) VALUES ('Irish');
+INSERT INTO cuisines (cuisine_name) VALUES ('Italian');
+INSERT INTO cuisines (cuisine_name) VALUES ('Japanese');
+INSERT INTO cuisines (cuisine_name) VALUES ('Korean');
+INSERT INTO cuisines (cuisine_name) VALUES ('Mexican');
+INSERT INTO cuisines (cuisine_name) VALUES ('Russian');
+INSERT INTO cuisines (cuisine_name) VALUES ('Spanish');
+INSERT INTO cuisines (cuisine_name) VALUES ('Street');
+INSERT INTO cuisines (cuisine_name) VALUES ('Thai');
+INSERT INTO cuisines (cuisine_name) VALUES ('Vegan');
+
+INSERT INTO meals (meal_name) VALUES ('Breakfast');
+INSERT INTO meals (meal_name) VALUES ('Lunch');
+INSERT INTO meals (meal_name) VALUES ('Dinner');
+INSERT INTO meals (meal_name) VALUES ('Dessert');
+INSERT INTO meals (meal_name) VALUES ('Snack');
+INSERT INTO meals (meal_name) VALUES ('Drink');
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (217.6, 52, 0.2, 13, 0.3)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Apple', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (656, 156, 1.5, 0, 16)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Avocado', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (196.6, 47, 0.9, 12, 0.1)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Orange', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (615, 147, 20, 3, 6.3)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Steak, Rump', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (150, 35.9, 3.6, 5, 0.1)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Milk, Skim', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'ml'), lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (217.6, 52, 11, 0.7, 0.2)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Egg White', 100, (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), lastval());
+COMMIT;

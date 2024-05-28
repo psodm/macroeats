@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS macros (
     energy NUMERIC NOT NULL,
     calories NUMERIC NOT NULL,
     protein NUMERIC NOT NULL,
-    carbohydrate NUMERIC NOT NULL,
+    carbohydrates NUMERIC NOT NULL,
     fat NUMERIC NOT NULL
 );
 
