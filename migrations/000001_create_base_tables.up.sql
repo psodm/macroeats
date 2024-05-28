@@ -42,12 +42,17 @@ CREATE TABLE IF NOT EXISTS recipes (
     recipe_name TEXT NOT NULL UNIQUE,
     recipe_description TEXT NOT NULL,
     recipe_meal_type_id INTEGER NOT NULL REFERENCES meals(meal_id),
-    recipe_cuisine_id INTEGER NOT NULL REFERENCES cuisines(cuisine_id),
     servings NUMERIC NOT NULL DEFAULT 1,
     recipe_macros_id INTEGER NOT NULL REFERENCES macros(macros_id),
     recipe_notes TEXT[] NOT NULL,
     created_at DATE NOT NULL DEFAULT CURRENT_DATE,
     version INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS recipe_cuisines (
+    recipe_id INTEGER REFERENCES recipes(recipe_id),
+    cuisine_id INTEGER REFERENCES cuisines(cuisine_id),
+    PRIMARY KEY (recipe_id, cuisine_id)
 );
 
 CREATE TABLE IF NOT EXISTS recipe_ingredient_sections (

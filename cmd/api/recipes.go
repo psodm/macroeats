@@ -13,7 +13,6 @@ func (app *application) handleCreateRecipe() http.Handler {
 		Name         string                         `json:"name"`
 		Description  string                         `json:"description"`
 		MealType     string                         `json:"mealType"`
-		Cuisine      string                         `json:"cuisine"`
 		Servings     float64                        `json:"servings"`
 		Macros       data.Macros                    `json:"macros"`
 		PrepTime     int64                          `json:"prepTime"`
@@ -34,7 +33,6 @@ func (app *application) handleCreateRecipe() http.Handler {
 				Name:         payload.Name,
 				Description:  payload.Description,
 				MealType:     payload.MealType,
-				Cuisine:      payload.Cuisine,
 				Servings:     payload.Servings,
 				Macros:       payload.Macros,
 				PrepTime:     data.CookingTime(payload.PrepTime),
@@ -72,7 +70,6 @@ func (app *application) handleShowRecipe() http.Handler {
 				Name:        "High Protein Mousse Bowl",
 				Description: "High protein, low fat and low carb mousse bowl",
 				MealType:    "Dessert",
-				Cuisine:     "Modern",
 				Servings:    3,
 				Macros: data.Macros{
 					Energy:        715.4,

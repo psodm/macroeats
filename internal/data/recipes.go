@@ -11,7 +11,6 @@ type Recipe struct {
 	Name         string                    `json:"name"`
 	Description  string                    `json:"description"`
 	MealType     string                    `json:"mealType"`
-	Cuisine      string                    `json:"cuisine"`
 	Servings     float64                   `json:"servings"`
 	Macros       Macros                    `json:"macros"`
 	PrepTime     CookingTime               `json:"prepTime"`
