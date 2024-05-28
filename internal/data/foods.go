@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -21,7 +22,7 @@ type Food struct {
 type FoodTx struct {
 	ID          int64       `json:"Id"`
 	FoodName    string      `json:"foodName"`
-	BrandName   string      `json:"brandName"`
+	Brand       Brand       `json:"brand"`
 	ServingSize float64     `json:"servingSize"`
 	Measurement Measurement `json:"measurement"`
 	Macros      Macros      `json:"macros"`
@@ -60,22 +61,46 @@ func (f FoodModel) InsertTx(foodTx *FoodTx) error {
 	defer tx.Rollback()
 
 	query1 := `SELECT measurement_id, measurement_name FROM measurements WHERE measurement_abbreviation = $1`
-	query2 := `INSERT INTO macros (energy, calories, protein, carbohydrate, fat) VALUES ($1, $2, $3, $4, $5) RETURNING macros_id`
-	query3 := `INSERT into foods (food_name, brand_name, serving_size, serving_measurement_id, macros_id) VALUES ($1, $2, $3, $4, $5) RETURNING food_id`
+	query2 := `SELECT brand_id FROM brands WHERE brand_name = $1`
+	query3 := `INSERT INTO brands (brand_name) VALUES ($1) RETURNING brand_id`
+	query4 := `INSERT INTO macros (energy, calories, protein, carbohydrate, fat) VALUES ($1, $2, $3, $4, $5) RETURNING macros_id`
+	query5 := `INSERT into foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id) VALUES ($1, $2, $3, $4, $5) RETURNING food_id`
 
 	err = tx.QueryRowContext(ctx, query1, foodTx.Measurement.MeasurementAbbreviation).Scan(&foodTx.Measurement.ID, &foodTx.Measurement.MeasurementName)
 	if err != nil {
 		return fail(err)
 	}
 
+	err = tx.QueryRowContext(ctx, query2, foodTx.Brand.BrandName).Scan(&foodTx.Brand.ID)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			err = tx.QueryRowContext(ctx, query3, foodTx.Brand.BrandName).Scan(&foodTx.Brand.ID)
+			if err != nil {
+				return fail(err)
+			}
+		default:
+			return fail(err)
+		}
+	}
+
 	args := []any{foodTx.Macros.Energy, foodTx.Macros.Calories, foodTx.Macros.Protein, foodTx.Macros.Carbohydrates, foodTx.Macros.Fat}
-	err = tx.QueryRowContext(ctx, query2, args...).Scan(&foodTx.Macros.ID)
+	err = tx.QueryRowContext(ctx, query4, args...).Scan(&foodTx.Macros.ID)
 	if err != nil {
 		return fail(err)
 	}
 
-	args = []any{foodTx.FoodName, foodTx.BrandName, foodTx.ServingSize, foodTx.Measurement.ID, foodTx.Macros.ID}
-	return tx.QueryRowContext(ctx, query3, args...).Scan(&foodTx.ID)
+	args = []any{foodTx.FoodName, foodTx.Brand.ID, foodTx.ServingSize, foodTx.Measurement.ID, foodTx.Macros.ID}
+	err = tx.QueryRowContext(ctx, query5, args...).Scan(&foodTx.ID)
+	if err != nil {
+		return fail(err)
+	}
+
+	if err = tx.Commit(); err != nil {
+		return fail(err)
+	}
+
+	return nil
 }
 
 func (f FoodModel) GetFoodById(id int64) (*Food, error) {

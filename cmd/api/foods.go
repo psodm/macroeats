@@ -28,6 +28,11 @@ func (app *application) handleCreateFood() http.Handler {
 				return
 			}
 			v := validator.New()
+			brand := data.Brand{ID: 0, BrandName: payload.BrandName}
+			if data.ValidateBrand(v, brand); !v.Valid() {
+				app.failedValidationResponse(w, r, v.Errors)
+				return
+			}
 			measurement := data.Measurement{ID: 0, MeasurementName: "", MeasurementAbbreviation: payload.ServingMeasurement}
 			macros := data.Macros{
 				Energy:        payload.Energy,
@@ -44,7 +49,7 @@ func (app *application) handleCreateFood() http.Handler {
 			food := data.FoodTx{
 				ID:          0,
 				FoodName:    payload.Name,
-				BrandName:   payload.BrandName,
+				Brand:       brand,
 				ServingSize: payload.ServingSize,
 				Measurement: measurement,
 				Macros:      macros,

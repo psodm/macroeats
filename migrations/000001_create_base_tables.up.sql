@@ -13,10 +13,15 @@ CREATE TABLE IF NOT EXISTS macros (
     fat NUMERIC NOT NULL
 );
 
+CREATE TABLE brands (
+    brand_id SERIAL PRIMARY KEY,
+    brand_name TEXT NOT NULL UNIQUE
+);
+
 CREATE TABLE IF NOT EXISTS foods (
     food_id SERIAL PRIMARY KEY,
     food_name TEXT NOT NULL UNIQUE,
-    brand_name TEXT,
+    brand_id INTEGER REFERENCES brands(brand_id),
     serving_size NUMERIC NOT NULL,
     serving_measurement_id INTEGER NOT NULL REFERENCES measurements(measurement_id),
     macros_id INTEGER NOT NULL REFERENCES macros(macros_id)
