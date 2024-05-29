@@ -22,7 +22,7 @@ func (app *application) handleCreateMeasurement() http.Handler {
 				app.badRequestResponse(w, r, err)
 				return
 			}
-			measurementUnit := &data.Measurement{
+			measurementUnit := data.Measurement{
 				MeasurementName:         payload.Name,
 				MeasurementAbbreviation: payload.Abbreviation,
 			}
@@ -34,7 +34,7 @@ func (app *application) handleCreateMeasurement() http.Handler {
 				return
 			}
 
-			err = app.models.Measurements.Insert(measurementUnit)
+			err = app.models.Measurements.Insert(&measurementUnit)
 			if err != nil {
 				app.serverErrorResponse(w, r, err)
 				return
@@ -129,7 +129,7 @@ func (app *application) handleUpdateMeasurement() http.Handler {
 			measurement.MeasurementName = payload.Name
 			measurement.MeasurementAbbreviation = payload.Abbreviation
 			v := validator.New()
-			if data.ValidateMeasurementUnit(v, measurement); !v.Valid() {
+			if data.ValidateMeasurementUnit(v, *measurement); !v.Valid() {
 				app.failedValidationResponse(w, r, v.Errors)
 				return
 			}

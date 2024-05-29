@@ -10,15 +10,17 @@ var (
 )
 
 type Models struct {
-	Measurements MeasurementModel
+	Brands       BrandModel
 	Foods        FoodModel
 	Macros       MacrosModel
+	Measurements MeasurementModel
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
-		Measurements: MeasurementModel{DB: db},
+		Brands:       BrandModel{DB: db},
 		Foods:        FoodModel{DB: db},
 		Macros:       MacrosModel{DB: db},
+		Measurements: MeasurementModel{DB: db},
 	}
 }

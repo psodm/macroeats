@@ -22,7 +22,7 @@ type BrandModel struct {
 	DB *sql.DB
 }
 
-func (b BrandModel) CreateBrand(brand *Brand) error {
+func (b BrandModel) Insert(brand *Brand) error {
 	query := `INSERT INTO brands (brand_name) VALUES ($1) RETURNING brand_id`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -99,7 +99,7 @@ func (b BrandModel) GetAll() ([]*Brand, error) {
 	return brands, nil
 }
 
-func (b BrandModel) UpdateBrand(brand *Brand) error {
+func (b BrandModel) Update(brand *Brand) error {
 	query := `UPDATE brands
 	          SET brand_name = $1
 			  WHERE brand_id = $2`

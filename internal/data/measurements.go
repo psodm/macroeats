@@ -15,7 +15,7 @@ type Measurement struct {
 	MeasurementAbbreviation string `json:"measurementAbbreviation"`
 }
 
-func ValidateMeasurementUnit(v *validator.Validator, unit *Measurement) {
+func ValidateMeasurementUnit(v *validator.Validator, unit Measurement) {
 	v.Check(unit.MeasurementName != "", "measurementName", "must be provided")
 	v.Check(unit.MeasurementAbbreviation != "", "measurementAbbreviation", "must be provided")
 }

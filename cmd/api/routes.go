@@ -7,8 +7,12 @@ func (app *application) routes() http.Handler {
 
 	router.Handle("GET /api/v1/healthcheck", app.handleHealthcheck())
 
-	router.Handle("GET /api/v1/measurements", app.handleShowAllMeasurements())
+	router.Handle("POST /api/v1/brands", app.handleCreateBrand())
+	router.Handle("GET /api/v1/brands", app.handleShowAllBrands())
+	router.Handle("GET /api/v1/brands/name/{name}", app.handleShowBrand())
+
 	router.Handle("POST /api/v1/measurements", app.handleCreateMeasurement())
+	router.Handle("GET /api/v1/measurements", app.handleShowAllMeasurements())
 	router.Handle("GET /api/v1/measurements/{id}", app.handleShowMeasurement())
 	router.Handle("PUT /api/v1/measurements/{id}", app.handleUpdateMeasurement())
 
