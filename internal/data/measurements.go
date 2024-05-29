@@ -30,7 +30,16 @@ func (m MeasurementModel) Insert(measurement *Measurement) error {
 	args := []any{measurement.MeasurementName, measurement.MeasurementAbbreviation}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	return m.DB.QueryRowContext(ctx, query, args...).Scan(&measurement.ID)
+	err := m.DB.QueryRowContext(ctx, query, args...).Scan(&measurement.ID)
+	if err != nil {
+		switch {
+		case isDuplicate(err):
+			return ErrDuplicateRow
+		default:
+			return err
+		}
+	}
+	return nil
 }
 
 func (m MeasurementModel) Get(id int64) (*Measurement, error) {

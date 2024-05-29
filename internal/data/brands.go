@@ -26,7 +26,16 @@ func (b BrandModel) Insert(brand *Brand) error {
 	query := `INSERT INTO brands (brand_name) VALUES ($1) RETURNING brand_id`
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	return b.DB.QueryRowContext(ctx, query, brand.BrandName).Scan(&brand.ID)
+	err := b.DB.QueryRowContext(ctx, query, brand.BrandName).Scan(&brand.ID)
+	if err != nil {
+		switch {
+		case isDuplicate(err):
+			return ErrDuplicateRow
+		default:
+			return err
+		}
+	}
+	return nil
 }
 
 func (b BrandModel) Get(id int64) (*Brand, error) {

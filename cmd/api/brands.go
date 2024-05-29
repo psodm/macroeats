@@ -30,12 +30,18 @@ func (app *application) handleCreateBrand() http.Handler {
 			}
 			err = app.models.Brands.Insert(&brand)
 			if err != nil {
-				app.serverErrorResponse(w, r, err)
-				return
+				switch {
+				case errors.Is(err, data.ErrDuplicateRow):
+					app.errorResponse(w, r, http.StatusConflict, err.Error())
+					return
+				default:
+					app.serverErrorResponse(w, r, err)
+					return
+				}
 			}
 
 			headers := make(http.Header)
-			headers.Set("Location", fmt.Sprintf("/api/v1/measurements/%d", brand.ID))
+			headers.Set("Location", fmt.Sprintf("/api/v1/brands/%d", brand.ID))
 
 			err = app.writeJSON(w, http.StatusCreated, envelope{"brand": brand}, headers)
 			if err != nil {

@@ -36,8 +36,14 @@ func (app *application) handleCreateMeasurement() http.Handler {
 
 			err = app.models.Measurements.Insert(&measurementUnit)
 			if err != nil {
-				app.serverErrorResponse(w, r, err)
-				return
+				switch {
+				case errors.Is(err, data.ErrDuplicateRow):
+					app.errorResponse(w, r, http.StatusConflict, err.Error())
+					return
+				default:
+					app.serverErrorResponse(w, r, err)
+					return
+				}
 			}
 
 			headers := make(http.Header)

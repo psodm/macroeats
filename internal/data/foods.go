@@ -81,7 +81,12 @@ func (f FoodModel) InsertTx(foodTx *FoodTx) error {
 	args := []any{foodTx.Macros.Energy, foodTx.Macros.Calories, foodTx.Macros.Protein, foodTx.Macros.Carbohydrates, foodTx.Macros.Fat}
 	err = tx.QueryRowContext(ctx, query4, args...).Scan(&foodTx.Macros.ID)
 	if err != nil {
-		return fail(err)
+		switch {
+		case isDuplicate(err):
+			return fail(ErrDuplicateRow)
+		default:
+			return fail(err)
+		}
 	}
 	food := Food{0, foodTx.FoodName, foodTx.Brand.ID, foodTx.ServingSize, foodTx.Measurement.ID, foodTx.Macros.ID}
 	err = f.Insert(&food)
