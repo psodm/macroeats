@@ -9,6 +9,7 @@ type Models struct {
 	Foods        FoodModel
 	Macros       MacrosModel
 	Measurements MeasurementModel
+	Recipes      RecipeModel
 }
 
 func NewModels(db *sql.DB) Models {
@@ -17,5 +18,6 @@ func NewModels(db *sql.DB) Models {
 		Foods:        FoodModel{DB: db},
 		Macros:       MacrosModel{DB: db},
 		Measurements: MeasurementModel{DB: db},
+		Recipes:      RecipeModel{DB: db},
 	}
 }

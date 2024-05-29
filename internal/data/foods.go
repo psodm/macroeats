@@ -11,8 +11,8 @@ import (
 )
 
 type Food struct {
-	ID                   int64   `json:"Id"`
-	FoodName             string  `json:"foodName"`
+	ID                   int64   `json:"id"`
+	FoodName             string  `json:"name"`
 	BrandID              int64   `json:"brandId"`
 	ServingSize          float64 `json:"servingSize"`
 	ServingMeasurementID int64   `json:"servingMeasurementId"`
@@ -20,8 +20,8 @@ type Food struct {
 }
 
 type FoodTx struct {
-	ID          int64       `json:"Id"`
-	FoodName    string      `json:"foodName"`
+	ID          int64       `json:"id"`
+	FoodName    string      `json:"name"`
 	Brand       Brand       `json:"brand"`
 	ServingSize float64     `json:"servingSize"`
 	Measurement Measurement `json:"measurement"`

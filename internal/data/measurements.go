@@ -10,9 +10,9 @@ import (
 )
 
 type Measurement struct {
-	ID                      int64  `json:"measurementId"`
-	MeasurementName         string `json:"measurementName"`
-	MeasurementAbbreviation string `json:"measurementAbbreviation"`
+	ID                      int64  `json:"id"`
+	MeasurementName         string `json:"name"`
+	MeasurementAbbreviation string `json:"abbreviation"`
 }
 
 func ValidateMeasurementUnit(v *validator.Validator, unit Measurement) {

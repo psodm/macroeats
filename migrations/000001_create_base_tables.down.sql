@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS recipe_instructions;
 DROP TABLE IF EXISTS recipe_ingredients;
 DROP TABLE IF EXISTS recipe_ingredient_sections;
+DROP TABLE IF EXISTS recipe_cuisines;
 DROP TABLE IF EXISTS recipe_notes;
 DROP TABLE IF EXISTS recipes;
 DROP TABLE IF EXISTS meals;

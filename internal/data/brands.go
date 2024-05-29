@@ -10,8 +10,8 @@ import (
 )
 
 type Brand struct {
-	ID        int64  `json:"Id"`
-	BrandName string `json:"brandName"`
+	ID        int64  `json:"id"`
+	BrandName string `json:"name"`
 }
 
 func ValidateBrand(v *validator.Validator, brand Brand) {
