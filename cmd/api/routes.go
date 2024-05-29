@@ -10,6 +10,7 @@ func (app *application) routes() http.Handler {
 	router.Handle("POST /api/v1/brands", app.handleCreateBrand())
 	router.Handle("GET /api/v1/brands", app.handleShowAllBrands())
 	router.Handle("GET /api/v1/brands/name/{name}", app.handleShowBrand())
+	router.Handle("PUT /api/v1/brands/{id}", app.handleUpdateBrand())
 
 	router.Handle("POST /api/v1/measurements", app.handleCreateMeasurement())
 	router.Handle("GET /api/v1/measurements", app.handleShowAllMeasurements())

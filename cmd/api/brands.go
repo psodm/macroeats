@@ -97,3 +97,50 @@ func (app *application) handleShowAllBrands() http.Handler {
 		},
 	)
 }
+
+func (app *application) handleUpdateBrand() http.Handler {
+	type inputPayload struct {
+		BrandName string `json:"brandName"`
+	}
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			id, err := app.readIDParam(r)
+			if err != nil {
+				http.NotFound(w, r)
+				return
+			}
+			brand, err := app.models.Brands.Get(id)
+			if err != nil {
+				switch {
+				case errors.Is(err, data.ErrRecordNotFound):
+					app.notFoundResponse(w, r)
+				default:
+					app.logger.Error(err.Error())
+					app.serverErrorResponse(w, r, err)
+				}
+				return
+			}
+			payload, err := decode[inputPayload](w, r)
+			if err != nil {
+				app.badRequestResponse(w, r, err)
+				return
+			}
+			brand.BrandName = payload.BrandName
+			v := validator.New()
+			if data.ValidateBrand(v, *brand); !v.Valid() {
+				app.failedValidationResponse(w, r, v.Errors)
+				return
+			}
+			err = app.models.Brands.Update(brand)
+			if err != nil {
+				app.serverErrorResponse(w, r, err)
+				return
+			}
+			err = app.writeJSON(w, http.StatusOK, envelope{"brand": brand}, nil)
+			if err != nil {
+				app.logger.Error(err.Error())
+				app.serverErrorResponse(w, r, err)
+			}
+		},
+	)
+}

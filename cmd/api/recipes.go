@@ -83,7 +83,7 @@ func (app *application) handleShowRecipe() http.Handler {
 				Ingredients: []data.RecipeIngredientSection{
 					{SectionName: "Mousse Mixture",
 						Ingredients: []data.RecipeIngredient{
-							{IngredientName: "Jelly Mix, Sugar Free", MeasurementQuantity: 36, MeasurementAbbreviation: "g"},
+							{IngredientName: "Jelly Mix, Sugar Free", MeasurementQuantity: 18, MeasurementAbbreviation: "g"},
 							{IngredientName: "Water", MeasurementQuantity: 500, MeasurementAbbreviation: "ml"},
 							{IngredientName: "Greek Yoghurt, Fat Free", MeasurementQuantity: 500, MeasurementAbbreviation: "g"},
 							{IngredientName: "Protein Powder, Unflavored", MeasurementQuantity: 60, MeasurementAbbreviation: "g"},
@@ -100,7 +100,9 @@ func (app *application) handleShowRecipe() http.Handler {
 					{Step: 6, Description: "Cover each bowl and chill in the fridge for at least 3 hours"},
 				},
 				Notes: []string{
-					"Suitable for meal prep. Keeps in the fridge 2-3 days. Can be made without salt, but a pinch of salt will enhance the sweetness",
+					"Suitable for meal prep.",
+					"Keeps in the fridge 2-3 days.",
+					"Can be made without salt, but a pinch of salt will enhance the sweetness",
 				},
 				CreatedAt: time.Now(),
 				Version:   1,
