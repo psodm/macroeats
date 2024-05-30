@@ -79,6 +79,10 @@ func main() {
 	os.Exit(1)
 }
 
+func run() error {
+	return nil
+}
+
 func openDB(cfg config) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.db.dsn)
 	if err != nil {

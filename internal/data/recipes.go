@@ -23,20 +23,20 @@ type Recipe struct {
 }
 
 type RecipeTx struct {
-	ID           int64               `json:"id"`
-	Name         string              `json:"name"`
-	Description  string              `json:"description"`
-	Meal         Meal                `json:"meal"`
-	Cuisines     []string            `json:"cuisines"`
-	Servings     float64             `json:"servings"`
-	PrepTime     int64               `json:"prepTime"`
-	TotalTime    int64               `json:"totalTime"`
-	Macros       Macros              `json:"macros"`
-	Ingredients  map[string][]string `json:"ingredients"`
-	Instructions []string            `json:"instructions"`
-	Notes        []string            `json:"notes"`
-	CreatedAt    time.Time           `json:"-"`
-	Version      int64               `json:"version"`
+	ID           int64                     `json:"id"`
+	Name         string                    `json:"name"`
+	Description  string                    `json:"description"`
+	Meal         Meal                      `json:"meal"`
+	Cuisines     []string                  `json:"cuisines"`
+	Servings     float64                   `json:"servings"`
+	PrepTime     int64                     `json:"prepTime"`
+	TotalTime    int64                     `json:"totalTime"`
+	Macros       Macros                    `json:"macros"`
+	Ingredients  []RecipeIngredientSection `json:"ingredients"`
+	Instructions []string                  `json:"instructions"`
+	Notes        []string                  `json:"notes"`
+	CreatedAt    time.Time                 `json:"-"`
+	Version      int64                     `json:"version"`
 }
 
 func ValidateRecipe(v *validator.Validator, recipe *RecipeTx) {

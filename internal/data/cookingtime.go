@@ -13,7 +13,6 @@ type CookingTime int64
 
 func (c CookingTime) MarshalJSON() ([]byte, error) {
 	var jsonValue string
-
 	if c < 60 {
 		jsonValue = fmt.Sprintf("%d min", c)
 	} else {
@@ -29,16 +28,11 @@ func (c *CookingTime) UnmarshalJSON(jsonValue []byte) error {
 	if err != nil {
 		return ErrInvalidCookingTimeFormat
 	}
-
 	parts := strings.Split(unquotedJSONValue, " ")
-
-	fmt.Println(len(parts))
-
-	if len(parts) != 2 || len(parts) != 4 { // This isn't working with the or clause. Only works without it ???
+	if len(parts) != 2 && len(parts) != 4 {
 		fmt.Println("I'm here")
 		return ErrInvalidCookingTimeFormat
 	}
-
 	if len(parts) == 2 {
 		if !strings.Contains(parts[1], "min") {
 			return ErrInvalidCookingTimeFormat
@@ -63,8 +57,6 @@ func (c *CookingTime) UnmarshalJSON(jsonValue []byte) error {
 		}
 		totalMinutes += min
 	}
-
 	*c = CookingTime(totalMinutes)
-
 	return nil
 }
