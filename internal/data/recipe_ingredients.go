@@ -1,13 +1,14 @@
 package data
 
 type RecipeIngredientSection struct {
-	SectionName string             `json:"section"`
-	Ingredients []RecipeIngredient `json:"ingredients"`
+	ID          int64
+	SectionName string
 }
 
 type RecipeIngredient struct {
-	ID                      int64   `json:"Id"`
-	IngredientName          string  `json:"ingredientName"`
-	MeasurementQuantity     float64 `json:"ingredientAmount"`
-	MeasurementAbbreviation string  `json:"measurementAbbreviation"`
+	ID            int64
+	FoodID        int64
+	SectionID     int64
+	Quantity      float64
+	MeasurementID int64
 }

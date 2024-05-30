@@ -23,19 +23,20 @@ type Recipe struct {
 }
 
 type RecipeTx struct {
-	ID           int64     `json:"id"`
-	Name         string    `json:"name"`
-	Description  string    `json:"description"`
-	Meal         Meal      `json:"meal"`
-	Servings     float64   `json:"servings"`
-	PrepTime     int64     `json:"prepTime"`
-	TotalTime    int64     `json:"totalTime"`
-	Macros       Macros    `json:"macros"`
-	Ingredients  []string  `json:"ingredients"`
-	Instructions []string  `json:"instructions"`
-	Notes        []string  `json:"notes"`
-	CreatedAt    time.Time `json:"-"`
-	Version      int64     `json:"version"`
+	ID           int64               `json:"id"`
+	Name         string              `json:"name"`
+	Description  string              `json:"description"`
+	Meal         Meal                `json:"meal"`
+	Cuisines     []string            `json:"cuisines"`
+	Servings     float64             `json:"servings"`
+	PrepTime     int64               `json:"prepTime"`
+	TotalTime    int64               `json:"totalTime"`
+	Macros       Macros              `json:"macros"`
+	Ingredients  map[string][]string `json:"ingredients"`
+	Instructions []string            `json:"instructions"`
+	Notes        []string            `json:"notes"`
+	CreatedAt    time.Time           `json:"-"`
+	Version      int64               `json:"version"`
 }
 
 func ValidateRecipe(v *validator.Validator, recipe *RecipeTx) {
@@ -92,6 +93,11 @@ func (r RecipeModel) InsertTx(recipeTx *RecipeTx) error {
 	defer tx.Rollback()
 	query1 := `SELECT meal_id FROM meals WHERE meal_name = $1`
 	query2 := `INSERT INTO macros (energy, calories, protein, carbohydrate, fat) VALUES ($1, $2, $3, $4, $5) RETURNING macros_id`
+	query3 := `SELECT cuisine_id, cuisine_name from cuisines`
+	query4 := `INSERT INTO recipe_cuisines (recipe_id, cuisine_id) VALUES($1, $2)`
+	query5 := `INSERT INTO recipe_instructions(recipe_id, step, instruction) VALUES ($1, $2, $3) RETURNING instruction_id`
+	query6 := `INSERT INTO recipe_notes(recipe_id, note_text)`
+	// query7 := `INSERT INTO recipe_ingredient_sections (section_name) VALUES ($1) RETURNING section_id`
 
 	err = tx.QueryRowContext(ctx, query1, recipeTx.Meal.MealName).Scan(&recipeTx.Meal.ID)
 	if err != nil {
@@ -117,11 +123,77 @@ func (r RecipeModel) InsertTx(recipeTx *RecipeTx) error {
 		return fail(err)
 	}
 
-	// CONTINE HERE
-	// ingredients
-	// instructions
-	// notes
+	var cuisines []Cuisine
 
+	// CONTINE HERE
+	// cuisines
+	rows, err := tx.QueryContext(ctx, query3, nil)
+	if err != nil {
+		return fail(err)
+	}
+	for rows.Next() {
+		var cuisine Cuisine
+		err = rows.Scan(&cuisine.ID, &cuisine.CuisineName)
+		if err != nil {
+			return fail(err)
+		}
+		cuisines = append(cuisines, cuisine)
+	}
+	for _, cuisine := range recipeTx.Cuisines {
+		cuisineId := getCuisine(cuisines, cuisine)
+		if cuisineId == -1 {
+			return fail(fmt.Errorf("cuisine '%s' does not exist", cuisine))
+		}
+		err = tx.QueryRowContext(ctx, query4, recipeTx.ID, cuisineId).Scan()
+		if err != nil {
+			return fail(err)
+		}
+	}
+
+	// ingredient sections
+	// ingredients
+
+	// for key, values := range recipeTx.Ingredients {
+	// 	section := RecipeIngredientSection{}
+	// 	err = tx.QueryRowContext(ctx, query7, key).Scan(&section.ID)
+	// 	if err != nil {
+	// 		return fail(err)
+	// 	}
+	// 	for _, ingredient := range values {
+	// 		args = []any{recipeTx.ID, } //NO. Need to search for the food and include, or add
+	// 	}
+	// }
+
+	// instructions
+	for idx, value := range recipeTx.Instructions {
+		instruction := RecipeInstruction{0, recipeTx.ID, int64(idx + 1), value}
+		err = tx.QueryRowContext(ctx, query5, args...).Scan(&instruction.ID)
+		if err != nil {
+			return fail(err)
+		}
+	}
+
+	// notes
+	for _, note := range recipeTx.Notes {
+		args := []any{recipeTx.ID, note}
+		err = tx.QueryRowContext(ctx, query6, args...).Scan()
+		if err != nil {
+			return fail(err)
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return fail(err)
+	}
 	// End transaction
 	return nil
+}
+
+func getCuisine(cuisines []Cuisine, cuisine string) int64 {
+	for _, c := range cuisines {
+		if cuisine == c.CuisineName {
+			return c.ID
+		}
+	}
+	return -1
 }

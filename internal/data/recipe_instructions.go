@@ -1,6 +1,8 @@
 package data
 
 type RecipeInstruction struct {
-	Step        int64  `json:"step"`
-	Description string `json:"instructionDescription"`
+	ID          int64
+	RecipeID    int64
+	Step        int64
+	Description string
 }
