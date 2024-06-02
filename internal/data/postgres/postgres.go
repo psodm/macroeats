@@ -1,18 +1,16 @@
 package postgres
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
-
-	"github.com/jackc/pgx/v5"
 )
 
-func transaction(ctx context.Context, tx pgx.Tx, f func() error) error {
+func transaction(tx *sql.Tx, f func() error) error {
 	if err := f(); err != nil {
-		_ = tx.Rollback(ctx)
+		_ = tx.Rollback()
 		return fmt.Errorf("f %w", err)
 	}
-	if err := tx.Commit(ctx); err != nil {
+	if err := tx.Commit(); err != nil {
 		return fmt.Errorf("commit %w", err)
 	}
 	return nil

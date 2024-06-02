@@ -1,17 +1,13 @@
 package data
 
 import (
-	"context"
-	"database/sql"
-	"time"
-
 	"github.com/psodm/macroeats/internal/validator"
 )
 
 const KJ_TO_CAL = 0.239006
 
 type Macros struct {
-	ID            int64   `kson:"Id"`
+	ID            int64   `json:"id"`
 	Energy        float64 `json:"energy"`
 	Calories      float64 `json:"calories"`
 	Protein       float64 `json:"protein"`
@@ -32,17 +28,4 @@ func (m *Macros) NormaliseMacrosEnergyAndCalories() {
 	} else {
 		m.Energy = m.Calories / KJ_TO_CAL
 	}
-}
-
-type MacrosModel struct {
-	DB *sql.DB
-}
-
-func (m MacrosModel) Insert(macros *Macros) error {
-	query := `INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
-	          VALUES($1, $2, $3, $4, $5) RETURNING macros_id`
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	args := []any{macros.Energy, macros.Calories, macros.Protein, macros.Carbohydrates, macros.Fat}
-	return m.DB.QueryRowContext(ctx, query, args...).Scan(&macros.ID)
 }

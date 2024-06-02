@@ -44,10 +44,12 @@ INSERT INTO meals (meal_name) VALUES ('Dessert');
 INSERT INTO meals (meal_name) VALUES ('Snack');
 INSERT INTO meals (meal_name) VALUES ('Drink');
 
+INSERT INTO brands (brand_name) VALUES ('');
 INSERT INTO brands (brand_name) VALUES ('Tamar Valley');
 INSERT INTO brands (brand_name) VALUES ('Jalna');
 INSERT INTO brands (brand_name) VALUES ('Aeroplane');
 INSERT INTO brands (brand_name) VALUES ('Bulk Nutrients');
+INSERT INTO brands (brand_name) VALUES ('EHP Labs');
 
 BEGIN;
     WITH m AS (
@@ -149,6 +151,20 @@ BEGIN;
     VALUES ('Greek Yoghurt, 99.85% Fat Free',
             (SELECT brand_id FROM brands WHERE brand_name = 'Tamar Valley'),
             100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (31, 5, 0, 1, 0)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Pride Pre-Workout',
+            (SELECT brand_id FROM brands WHERE brand_name = 'EHP Labs'),
+            9.35,
             (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
             lastval());
 COMMIT;

@@ -34,7 +34,7 @@ func (app *application) handleCreateMeasurement() http.Handler {
 				return
 			}
 
-			err = app.models.Measurements.Insert(&measurementUnit)
+			err = app.stores.measurementStore.Insert(r.Context(), &measurementUnit)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrDuplicateRow):
@@ -65,7 +65,7 @@ func (app *application) handleShowMeasurement() http.Handler {
 				http.NotFound(w, r)
 				return
 			}
-			measurement, err := app.models.Measurements.Get(id)
+			measurement, err := app.stores.measurementStore.Get(r.Context(), id)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -88,7 +88,7 @@ func (app *application) handleShowMeasurement() http.Handler {
 func (app *application) handleShowAllMeasurements() http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			measurements, err := app.models.Measurements.GetAll()
+			measurements, err := app.stores.measurementStore.GetAll(r.Context())
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -116,7 +116,7 @@ func (app *application) handleUpdateMeasurement() http.Handler {
 				http.NotFound(w, r)
 				return
 			}
-			measurement, err := app.models.Measurements.Get(id)
+			measurement, err := app.stores.measurementStore.Get(r.Context(), id)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -139,7 +139,7 @@ func (app *application) handleUpdateMeasurement() http.Handler {
 				app.failedValidationResponse(w, r, v.Errors)
 				return
 			}
-			err = app.models.Measurements.Update(measurement)
+			err = app.stores.measurementStore.Update(r.Context(), measurement)
 			if err != nil {
 				app.serverErrorResponse(w, r, err)
 				return

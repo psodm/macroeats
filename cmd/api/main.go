@@ -11,7 +11,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/psodm/macroeats/internal/data"
+	"github.com/psodm/macroeats/internal/data/postgres"
 )
 
 const version = "1.0.0"
@@ -30,7 +30,12 @@ type config struct {
 type application struct {
 	config
 	logger *slog.Logger
-	models data.Models
+	stores struct {
+		brandStore       *postgres.BrandStore
+		measurementStore *postgres.MeasurementStore
+		macroStore       *postgres.MacrosStore
+		foodStore        *postgres.FoodStore
+	}
 }
 
 func main() {
@@ -60,8 +65,12 @@ func main() {
 	app := &application{
 		config: cfg,
 		logger: logger,
-		models: data.NewModels(db),
 	}
+
+	app.stores.brandStore = postgres.NewBrandStore(db)
+	app.stores.macroStore = postgres.NewMacrosStore(db)
+	app.stores.measurementStore = postgres.NewMeansurementStore(db)
+	app.stores.foodStore = postgres.NewFoodStore(db)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),

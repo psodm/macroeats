@@ -11,7 +11,7 @@ var (
 	ErrDuplicateRow   = errors.New("record already exists")
 )
 
-func isDuplicate(err error) bool {
+func IsDuplicate(err error) bool {
 	pqErr, ok := err.(*pq.Error)
 	if ok {
 		if pqErr.Code == "23505" {

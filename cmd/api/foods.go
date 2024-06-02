@@ -54,7 +54,7 @@ func (app *application) handleCreateFood() http.Handler {
 				Measurement: measurement,
 				Macros:      macros,
 			}
-			err = app.models.Foods.InsertTx(&food)
+			err = app.stores.foodStore.InsertTx(r.Context(), &food, app.stores.brandStore, app.stores.measurementStore, app.stores.macroStore)
 			if err != nil {
 				app.logger.Error(err.Error())
 				app.serverErrorResponse(w, r, err)

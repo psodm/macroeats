@@ -28,7 +28,7 @@ func (app *application) handleCreateBrand() http.Handler {
 				app.failedValidationResponse(w, r, v.Errors)
 				return
 			}
-			err = app.models.Brands.Insert(&brand)
+			err = app.stores.brandStore.Insert(r.Context(), &brand)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrDuplicateRow):
@@ -55,7 +55,7 @@ func (app *application) handleShowBrand() http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			name := app.readParam(r, "name")
-			brand, err := app.models.Brands.GetByName(name)
+			brand, err := app.stores.brandStore.GetByName(r.Context(), name)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -78,7 +78,7 @@ func (app *application) handleShowBrand() http.Handler {
 func (app *application) handleShowAllBrands() http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			brands, err := app.models.Brands.GetAll()
+			brands, err := app.stores.brandStore.GetAll(r.Context())
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -109,7 +109,7 @@ func (app *application) handleUpdateBrand() http.Handler {
 				http.NotFound(w, r)
 				return
 			}
-			brand, err := app.models.Brands.Get(id)
+			brand, err := app.stores.brandStore.Get(r.Context(), id)
 			if err != nil {
 				switch {
 				case errors.Is(err, data.ErrRecordNotFound):
@@ -131,7 +131,7 @@ func (app *application) handleUpdateBrand() http.Handler {
 				app.failedValidationResponse(w, r, v.Errors)
 				return
 			}
-			err = app.models.Brands.Update(brand)
+			err = app.stores.brandStore.Update(r.Context(), brand)
 			if err != nil {
 				app.serverErrorResponse(w, r, err)
 				return
