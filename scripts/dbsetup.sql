@@ -50,6 +50,8 @@ INSERT INTO brands (brand_name) VALUES ('Jalna');
 INSERT INTO brands (brand_name) VALUES ('Aeroplane');
 INSERT INTO brands (brand_name) VALUES ('Bulk Nutrients');
 INSERT INTO brands (brand_name) VALUES ('EHP Labs');
+INSERT INTO brands (brand_name) VALUES ('Old El Paso');
+INSERT INTO brands (brand_name) VALUES ('Leggo''s');
 
 BEGIN;
     WITH m AS (
@@ -197,5 +199,46 @@ BEGIN;
             lastval());
 COMMIT;
 
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (1160, 277, 7.5, 50.3, 3.3)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Taco Spice Mix',
+            (SELECT brand_id FROM brands WHERE brand_name = 'Old El Paso'),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (690, 165, 31, 0, 3.6)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Chicken, Breast (Skinless)',
+            (SELECT brand_id FROM brands WHERE brand_name = ''),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
+
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (296, 70.7, 3.3, 11.3, 0.5)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('Tomato Paste',
+            (SELECT brand_id FROM brands WHERE brand_name = 'Leggo''s'),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
 
 
