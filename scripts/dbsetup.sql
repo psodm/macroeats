@@ -241,4 +241,17 @@ BEGIN;
             lastval());
 COMMIT;
 
+BEGIN;
+    WITH m AS (
+        INSERT INTO macros (energy, calories, protein, carbohydrates, fat)
+        VALUES (2000, 478, 9, 70, 17)
+        RETURNING macros_id
+    )
+    INSERT INTO foods (food_name, brand_id, serving_size, serving_measurement_id, macros_id)
+    VALUES ('BBQ Corn Kernels',
+            (SELECT brand_id FROM brands WHERE brand_name = ''),
+            100,
+            (SELECT measurement_id FROM measurements WHERE measurement_abbreviation = 'g'), 
+            lastval());
+COMMIT;
 
